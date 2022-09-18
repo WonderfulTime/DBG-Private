@@ -29,7 +29,7 @@ def unactive_window_screen(item_path, width, height):
 
 
     result = windll.user32.PrintWindow(hwnd, saveDC.GetSafeHdc(), 0)
-    print (result)
+    # print (result)
 
     bmpinfo = saveBitMap.GetInfo()
     bmpstr = saveBitMap.GetBitmapBits(True)
@@ -43,7 +43,7 @@ def unactive_window_screen(item_path, width, height):
     saveDC.DeleteDC()
     mfcDC.DeleteDC()
     win32gui.ReleaseDC(hwnd, hwndDC)
-    img.save('D:/OpenCV/OPENCV_Projects/image/DBG/Screens/'+ item_path +'.jpeg')
+    img.save('image/DBG/Screens/'+ item_path +'.jpeg')
 
 
 
@@ -51,11 +51,11 @@ def unactive_window_screen(item_path, width, height):
 
 
 
-def img_crop(item_path, w, h, l, t):
+def img_crop(item_path, item_path_new, w, h, l, t):
 
-    Nimg = Image.open('D:/OpenCV/OPENCV_Projects/image/DBG/Screens/' + item_path + '.jpeg')
+    Nimg = Image.open('image/DBG/Screens/' + item_path + '.jpeg')
     Nimg = Nimg.crop((w, h, l, t))
-    Nimg.save('D:/OpenCV/OPENCV_Projects/image/DBG/Screens/' + item_path + '.jpeg')
+    Nimg.save('image/DBG/Screens/' + item_path_new + '.jpeg')
 
 
 
@@ -65,7 +65,7 @@ def img_crop(item_path, w, h, l, t):
 
 
 
-unactive_window_screen('test_window_grab', 1920, 1024)
+
 
 
 
@@ -82,8 +82,16 @@ def clicks(x,y):
     time.sleep(0.5)
     win32gui.PostMessage(hwndChild, win32con.WM_LBUTTONUP, win32con.MK_LBUTTON, lParam)
 
-time.sleep(2)
-clicks(56,56)
+
+
+#пример функций
+# unactive_window_screen('test_window_grab', 1920, 1024)
+#
+# img_crop('test_window_grab', , , , )
+#
+#
+# clicks(56,56)
+
 
 
 

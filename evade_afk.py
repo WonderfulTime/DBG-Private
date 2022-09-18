@@ -4,7 +4,7 @@ import win32com.client as win32
 import win32api, win32con
 import cv2
 from PIL import ImageGrab
-import imgutils
+
 import easyocr
 from matplotlib import pyplot as pl
 from mss import mss
@@ -14,6 +14,9 @@ import pyautogui
 from time import sleep
 from matplotlib import pyplot as pltd
 from termcolor import colored
+from find_window import *
+from img_buffer import *
+
 
 
 monitor = {
@@ -24,10 +27,16 @@ monitor = {
     }
 
 def evade_afk_check():
-    afk_choose_screen = ImageGrab.grab(bbox=(440, 152, 1465, 378))  # область АФК CHOOSE
-    afk_choose_screen.save('image/DBG/Screens/screen_afk.jpeg')
 
-    img_grb_afk = cv2.imread('image/DBG/Screens/screen_afk.jpeg')
+
+    # afk_choose_screen = ImageGrab.grab(bbox=(440, 152, 1465, 378))  # область АФК CHOOSE
+    # afk_choose_screen.save('image/DBG/Screens/screen_afk.jpeg')
+
+    unactive_window_screen('screen_afk', 1920, 1024)
+    img_crop('screen_afk', 'screen_afk_crop', 525, 177, 1363, 289)
+
+
+    img_grb_afk = cv2.imread('image/DBG/Screens/screen_afk_crop.jpeg')
     img_gray_afk = cv2.cvtColor(img_grb_afk, cv2.COLOR_BGR2GRAY)
 
     text = easyocr.Reader(['en'])
@@ -45,14 +54,15 @@ def evade_afk_check():
         # подставить выбор итемов АФК
 
         # начало афк проверки итемов
-        select_itm = cv2.imread('image/DBG/afk/screen_afk.jpeg')
+
+        # select_itm = cv2.imread('image/DBG/afk/screen_afk.jpeg')
 
         # сюда вставлять участок кода проверок
 
-        item_screen = ImageGrab.grab(bbox=(61, 42, 1822, 1026))  # область АФК Circle
-        item_screen.save('image/DBG/Screens/item_screen.jpeg')
+        unactive_window_screen('item_screen', 1920, 1024)  # область АФК Items
+        img_crop('item_screen', 'item_screen_crop', 61, 40, 1818, 1028)
 
-        img_grb_afk = cv2.imread('image/DBG/Screens/item_screen.jpeg')
+        img_grb_afk = cv2.imread('image/DBG/Screens/item_screen_crop.jpeg')
         img_gray_afk = cv2.cvtColor(img_grb_afk, cv2.COLOR_BGR2GRAY)
         #
         ### проверка условий на совпадение текста и картинки и клик на нее
@@ -63,7 +73,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -77,15 +87,17 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                # pyautogui.click(x, y)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -95,7 +107,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -104,20 +116,22 @@ def evade_afk_check():
             th = 0.93
             loc = np.where(result >= th)
             for pt in zip(*loc[::-1]):
+
                 cv2.rectangle(img_screen_afc_grb, pt, (pt[0] + w, pt[1] + h), (0, 255, 0), 1)
 
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x,y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
         #
@@ -127,7 +141,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -141,15 +155,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x,y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -159,7 +174,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -173,15 +188,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -191,7 +207,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -205,15 +221,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -223,7 +240,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -234,18 +251,20 @@ def evade_afk_check():
             for pt in zip(*loc[::-1]):
                 cv2.rectangle(img_screen_afc_grb, pt, (pt[0] + w, pt[1] + h), (0, 255, 0), 1)
 
+
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -255,7 +274,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -269,15 +288,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -287,7 +307,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -301,15 +321,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -319,7 +340,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -333,15 +354,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -351,7 +373,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -365,15 +387,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -383,7 +406,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -397,15 +420,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -415,7 +439,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -429,15 +453,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -447,7 +472,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -461,15 +486,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -479,7 +505,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -493,15 +519,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -511,7 +538,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -525,15 +552,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -543,7 +571,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -557,15 +585,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -575,7 +604,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -589,15 +618,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -607,7 +637,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -621,15 +651,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -639,7 +670,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -653,15 +684,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -671,7 +703,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -685,15 +717,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -703,7 +736,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -717,15 +750,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -735,7 +769,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -749,15 +783,16 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
@@ -767,7 +802,7 @@ def evade_afk_check():
             item_template = cv2.imread(
                 'image/DBG/Cut/last_changed/' + item + '.png')
             img_screen_afc_grb = cv2.imread(
-                'image/DBG/Screens/item_screen.jpeg')
+                'image/DBG/Screens/item_screen_crop.jpeg')
 
             w = item_template.shape[1]
             h = item_template.shape[0]
@@ -781,20 +816,21 @@ def evade_afk_check():
             # попытка клика на верное изображение
             try:
                 x = (pt[
-                         0] + w + 30)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
-                y = (pt[1] + h + 30)
-                pyautogui.click(x, y)
+                         0] + w + 15)  # прибалять разницу к координатам между обрезанным скрином и полным экраном
+                y = (pt[1] + h + 15)
+                clicks(x, y)
                 # клик
 
                 print("DONEEE")
 
             except:
                 print("Значение изображения не в том диапазоне")
+                clicks(100, 100)
 
             sleep(1)
 
         else:
-            pyautogui.click(100, 100)
+            clicks(100, 100)
 
         ###
 
@@ -818,10 +854,10 @@ def evade_afk_check():
         sleep(2)
 
         # обновление картинки для цикла
-        afk_choose_screen = ImageGrab.grab(bbox=(440, 152, 1465, 378))  # область АФК CHOOSE
-        afk_choose_screen.save('image/DBG/Screens/screen_afk.jpeg')
+        unactive_window_screen('screen_afk', 1920, 1024)
+        img_crop('screen_afk', 'screen_afk_crop', 525, 177, 1363, 289)
 
-        img_grb_afk = cv2.imread('image/DBG/Screens/screen_afk.jpeg')
+        img_grb_afk = cv2.imread('image/DBG/Screens/screen_afk_crop.jpeg')
         img_gray_afk = cv2.cvtColor(img_grb_afk, cv2.COLOR_BGR2GRAY)
 
         text = easyocr.Reader(['en'])
@@ -839,12 +875,15 @@ def evade_afk_check():
     # проверка на АФК Circle
     # def afk_circle(): #захват области circle и чтение кортежа с Tap!
 
-    afk_Circle_choose_screen = ImageGrab.grab(bbox=(61, 42, 1822, 1026))  # область АФК Circle
-    afk_Circle_choose_screen.save(
-        'image/DBG/Screens/screen_afk_circle.jpeg')
+    # afk_Circle_choose_screen = ImageGrab.grab(bbox=(61, 42, 1822, 1026))  # область АФК Circle
+    # afk_Circle_choose_screen.save(
+    #     'image/DBG/Screens/screen_afk_circle.jpeg')
+
+    unactive_window_screen('screen_afk_circle', 1920, 1024)
+    img_crop('screen_afk_circle', 'screen_afk_circle_crop', 62, 42, 1818, 1027) # область АФК Circle
 
     img_grb_afk = cv2.imread(
-        'image/DBG/Screens/screen_afk_circle.jpeg')
+        'image/DBG/Screens/screen_afk_circle_crop.jpeg')
     img_gray_afk = cv2.cvtColor(img_grb_afk, cv2.COLOR_BGR2GRAY)
 
     text = easyocr.Reader(['en'])
@@ -868,6 +907,8 @@ def evade_afk_check():
                 # Получаем пиксель с экрана монитора
                 img = m.grab(monitor)
 
+                # img = img_buffer() #хуй знает как разобраться с monitor и mss.grab
+
                 # Преобразуем этот пиксель в матрицу
                 img_arr = np.array(img)
 
@@ -883,8 +924,8 @@ def evade_afk_check():
             our_color1_2 = [25, 101, 10]
             our_color1_3 = [6, 123, 2]
             our_color1_4 = [6, 117, 7]
-            our_color1_5 = [4, 130, 4]
-            our_color1_6 = [3, 130, 6]
+            our_color1_5 = [4, 115, 4]
+            our_color1_6 = [3, 115, 6]
             our_color1_7 = [25, 142, 22]
             our_color1_8 = [3, 129, 17]
             our_color1_9 = [5, 131, 6]
@@ -1210,12 +1251,15 @@ def evade_afk_check():
         # new_text_AFK = None #очистка переменной текста проверки while
 
         # конструкция проверки АФК кружков
-        afk_Circle_choose_screen = ImageGrab.grab(bbox=(61, 42, 1822, 1026))  # область АФК Circle
-        afk_Circle_choose_screen.save(
-            'image/DBG/Screens/screen_afk_circle.jpeg')
+        # afk_Circle_choose_screen = ImageGrab.grab(bbox=(61, 42, 1822, 1026))  # область АФК Circle
+        # afk_Circle_choose_screen.save(
+        #     'image/DBG/Screens/screen_afk_circle.jpeg')
+
+        unactive_window_screen('screen_afk_circle', 1920, 1024)
+        img_crop('screen_afk_circle', 'screen_afk_circle_crop', 62, 42, 1818, 1027)  # область АФК Circle
 
         img_grb_afk = cv2.imread(
-            'image/DBG/Screens/screen_afk_circle.jpeg')
+            'image/DBG/Screens/screen_afk_circle_crop.jpeg')
         img_gray_afk = cv2.cvtColor(img_grb_afk, cv2.COLOR_BGR2GRAY)
 
         text = easyocr.Reader(['en'])

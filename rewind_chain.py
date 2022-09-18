@@ -15,22 +15,25 @@ from time import sleep
 from matplotlib import pyplot as pltd
 from termcolor import colored
 from evade_afk import *
-
+from find_window import *
 
 def rewind_chain():
 
 
 
-    pyautogui.moveTo(530, 66)
+
     print('done')
-    pyautogui.moveTo(123, 100)  # кор-ды кнопки паузы
-    pyautogui.click()
+    clicks(60, 60)  # кор-ды кнопки паузы
+
     sleep(1)
-    pyautogui.moveTo(855, 715)  # кнопка выхода
-    pyautogui.click()
+    clicks(1368, 126) #кнопка ежедневной награды
+
+    sleep(1)
+    clicks(797, 675)  # кнопка выхода
+
     sleep(0.8)
-    pyautogui.moveTo(855, 715)  # подтверждение выхода
-    pyautogui.click()
+    clicks(797, 675)  # подтверждение выхода
+
     sleep(7)
 
     # тут проверка АФК!!!!
@@ -46,8 +49,8 @@ def rewind_chain():
     ########прокачка голды меты
 
     sleep(1)
-    pyautogui.moveTo(135, 257)  # прокачка скилов
-    pyautogui.click()
+    clicks(79, 206)  # прокачка скилов
+
     sleep(0.5)
 
     # 50% - (1412, 906);
@@ -63,27 +66,27 @@ def rewind_chain():
     # sleep(1)
 
     sleep(0.5)
-    pyautogui.moveTo(1557, 907)  # наводка на проценты 100%
-    pyautogui.click()
+    clicks(1489, 876)  # наводка на проценты 100%
+
     sleep(1)
 
     sleep(0.5)
-    pyautogui.moveTo(1664, 640)  # прокачка крита
-    pyautogui.click()
+    clicks(1586, 602)  # прокачка крита
+
     sleep(1)
 
     ########конец прокачки голды меты
 
-    pyautogui.moveTo(130, 938)  # нопка дерева-элексира
-    sleep(0.5)
-    pyautogui.click()
+    clicks(68, 909)  # нопка дерева-элексира
     sleep(0.5)
 
-    pyautogui.moveTo(608, 412)  # кнопка rewind
-    pyautogui.click()
+    sleep(0.5)
+
+    clicks(528, 372)  # кнопка rewind
+
     sleep(0.7)
-    pyautogui.moveTo(1119, 869)  # подтверждение ревайнда
-    pyautogui.click()
+    clicks(1127, 826)  # подтверждение ревайнда
+
     sleep(1)
 
     # вставка прокачки за элексир начало
@@ -100,26 +103,26 @@ def rewind_chain():
     ######вставка для прокачки за золото начало
 
     sleep(1)
-    pyautogui.moveTo(135, 257)  # прокачка скилов
-    pyautogui.click()
+    clicks(79, 206)  # прокачка скилов
+
     sleep(0.5)
 
     sleep(0.5)
-    pyautogui.moveTo(867, 901)  # прокачка голды
-    pyautogui.click()
+    clicks(811, 864)  # прокачка голды
+
     sleep(0.4)
 
     ######вставка для прокачки за золото конец
 
-    pyautogui.moveTo(1699, 105)  # бой
-    pyautogui.click()
+    clicks(1631, 60)  # бой
+
     sleep(1)
 
-    pyautogui.moveTo(944, 330)  # кнопка компания
-    pyautogui.click()
+    clicks(867, 279)  # кнопка компания
+
     sleep(0.3)
 
-    pyautogui.moveTo(1070, 692)  # кнопка подтверждение
-    pyautogui.click()
+    clicks(1004, 658)  # кнопка подтверждение
+
     sleep(7)
 
